@@ -30,11 +30,11 @@ wget https://developer.download.nvidia.com/compute/cuda/12.5.1/local_installers/
 sudo sh cuda_12.5.1_555.42.06_linux.run
 <!-- In case the driver is not properly installed, then -->
 sudo sh cuda_12.5.1_555.42.06_linux.run --silent --driver
-export PATH=/usr/local/cuda-12.5/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH
+<!-- export PATH=/usr/local/cuda-12.5/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH -->
 source ~/.bashrc
 
-# Hit the example for a working cuda script
+# Hit (custom) build and then main for a working raw cuda script
 cargo clean
 PATH=/usr/local/cuda-12.5/bin:$PATH LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH cargo build
 PATH=/usr/local/cuda-12.5/bin:$PATH LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH cargo run
