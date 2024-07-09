@@ -1,0 +1,10 @@
+[package]
+name = "elementwise_product"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[build]
+# Invoke build.rs before building the project
+build = "build.rs"
