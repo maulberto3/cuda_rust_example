@@ -1,43 +1,47 @@
+# Cuda through Rust Example
 
-## remove any prior traces of cuda and cudnn
+This example uses pure raw cuda to run:
 
-sudo apt-get remove --purge -y '*nvidia*' '*cuda*' 'libcudnn*' 'libnccl*' '*cudnn*' '*nccl*'
-sudo apt-get autoremove --purge -y
-sudo apt-get clean
-dpkg -l | grep -E 'nvidia|cuda|cudnn|nccl'
+- Custom Rust build actually throws a process using nvcc
+- So, cuda toolkit env vars pointing to cuda binaries must be set
+- Here, I adopt the approach of providing them on runtime
+- That build process compiles the cuda code to cuda compile code
+- Which produces a new executable file
+- Then, the run command is another Rust process that runs that executable
+- If successful, the matrix operation should return nicely
 
-nvidia-smi
-uname -m
+## Setup
 
-# Official Nvidia instructions type deb (local)
+### Remove any prior traces of cuda and cudnn
 
-<!-- wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
-sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/12.5.1/local_installers/cuda-repo-wsl-ubuntu-12-5-local_12.5.1-1_amd64.deb
-sudo dpkg -i cuda-repo-wsl-ubuntu-12-5-local_12.5.1-1_amd64.deb
-sudo cp /var/cuda-repo-wsl-ubuntu-12-5-local/cuda-*-keyring.gpg /usr/share/keyrings/
-sudo apt-get update
-sudo apt-get -y install cuda-toolkit-12-5 -->
+`sudo apt-get remove --purge -y '*nvidia*' '*cuda*' 'libcudnn*' 'libnccl*' '*cudnn*' '*nccl*'`
+`sudo apt-get autoremove --purge -y`
+`sudo apt-get clean`
+`dpkg -l | grep -E 'nvidia|cuda|cudnn|nccl'`
+`nvidia-smi`
+`uname -m`
 
-Those official instructions don't work as expected...
+### Official Nvidia instructions 
 
-Trying these other ones
+#### Type runfile (installer)
 
-# Official Nvidia instructions type runfile (installer)
+`_sudo apt-key del 7fa2af80_`
+`wget https://developer.download.nvidia.com/compute/cuda/12.5.1/local_installers/cuda_12.5.1_555.42.06_linux.run`
+`sudo sh cuda_12.5.1_555.42.06_linux.run`
+In case the driver is not properly installed, then
+`sudo sh cuda_12.5.1_555.42.06_linux.run --silent --driver`
+As mentioned, the following env vars are provided at runtime
+`export PATH=/usr/local/cuda-12.5/bin:$PATH`
+`export LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH`
+`source ~/.bashrc`
 
-<!-- sudo apt-key del 7fa2af80 -->
-wget https://developer.download.nvidia.com/compute/cuda/12.5.1/local_installers/cuda_12.5.1_555.42.06_linux.run
-sudo sh cuda_12.5.1_555.42.06_linux.run
-<!-- In case the driver is not properly installed, then -->
-sudo sh cuda_12.5.1_555.42.06_linux.run --silent --driver
-<!-- export PATH=/usr/local/cuda-12.5/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH -->
-source ~/.bashrc
+# Build and run 
 
-# Hit (custom) build and then main for a working raw cuda script
-cargo clean
-PATH=/usr/local/cuda-12.5/bin:$PATH LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH cargo build
-PATH=/usr/local/cuda-12.5/bin:$PATH LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH cargo run
+#### As mentioned above
+
+`cargo clean`
+`PATH=/usr/local/cuda-12.5/bin:$PATH LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH cargo build`
+`PATH=/usr/local/cuda-12.5/bin:$PATH LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH cargo run`
 
 The expected result is 
 
@@ -55,7 +59,7 @@ Element-wise product:
 9.000000 * 18.000000 = 0.000000
 ```
 
-Meaing that nvcc compiled cuda code to cuda machine code through rust and then it called nvcc to catually run that compiled code also through rust.
+Meaing that nvcc compiled cuda code to cuda machine code through rust and then rus again called nvcc to actually run that compiled code.
 
 
 
