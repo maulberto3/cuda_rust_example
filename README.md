@@ -34,24 +34,10 @@ export PATH=/usr/local/cuda-12.5/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH
 source ~/.bashrc
 
-# Ensure the environment variables persist, 
-# becase they seem to dissaper when wsl restarts
-
-nano ~/.bashrc
-# Check and add CUDA to PATH
-if [[ ":$PATH:" != *":/usr/local/cuda/bin:"* ]]; then
-    export PATH=/usr/local/cuda/bin:$PATH
-fi
-# Check and add CUDA to LD_LIBRARY_PATH
-if [[ ":$LD_LIBRARY_PATH:" != *":/usr/local/cuda/lib64:"* ]]; then
-    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-fi
-source ~/.bashrc
-
 # Hit the example for a working cuda script
 cargo clean
-cargo build
-crgo run
+PATH=/usr/local/cuda-12.5/bin:$PATH LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH cargo build
+PATH=/usr/local/cuda-12.5/bin:$PATH LD_LIBRARY_PATH=/usr/local/cuda-12.5/lib64:$LD_LIBRARY_PATH cargo run
 
 The expected result is 
 
